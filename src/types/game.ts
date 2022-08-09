@@ -1,4 +1,6 @@
 import { ThunkDispatch } from "redux-thunk";
+import { Bet, BetClient } from "./bet";
+import { Team } from "./team";
 
 export interface GameState {
   data: Game[];
@@ -7,11 +9,17 @@ export interface GameState {
 }
 
 export interface Game {
-  id: number;
+  GameId: number;
   weekId: number;
   homeTeamId: number;
   awayTeamId: number;
-  result: number;
+  Result: number;
+  HomeTeam: Team;
+  AwayTeam: Team;
+  GameBets: BetClient[]; 
+  HomeWinPoint: number; 
+  DrawPoint: number; 
+  AwayWinPoint: number; 
 }
 
 export interface GameForm {

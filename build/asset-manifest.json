@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/kankoo-frontend/static/css/main.5cdd6891.chunk.css",
+    "main.js": "/kankoo-frontend/static/js/main.31c2ab98.chunk.js",
+    "main.js.map": "/kankoo-frontend/static/js/main.31c2ab98.chunk.js.map",
+    "runtime-main.js": "/kankoo-frontend/static/js/runtime-main.1c8b7cc1.js",
+    "runtime-main.js.map": "/kankoo-frontend/static/js/runtime-main.1c8b7cc1.js.map",
+    "static/css/2.786ae0dd.chunk.css": "/kankoo-frontend/static/css/2.786ae0dd.chunk.css",
+    "static/js/2.599d4bfb.chunk.js": "/kankoo-frontend/static/js/2.599d4bfb.chunk.js",
+    "static/js/2.599d4bfb.chunk.js.map": "/kankoo-frontend/static/js/2.599d4bfb.chunk.js.map",
+    "index.html": "/kankoo-frontend/index.html",
+    "static/css/2.786ae0dd.chunk.css.map": "/kankoo-frontend/static/css/2.786ae0dd.chunk.css.map",
+    "static/css/main.5cdd6891.chunk.css.map": "/kankoo-frontend/static/css/main.5cdd6891.chunk.css.map",
+    "static/js/2.599d4bfb.chunk.js.LICENSE.txt": "/kankoo-frontend/static/js/2.599d4bfb.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.1c8b7cc1.js",
+    "static/css/2.786ae0dd.chunk.css",
+    "static/js/2.599d4bfb.chunk.js",
+    "static/css/main.5cdd6891.chunk.css",
+    "static/js/main.31c2ab98.chunk.js"
+  ]
+}
