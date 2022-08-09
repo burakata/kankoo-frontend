@@ -19,7 +19,6 @@ import { User } from '../types/user';
 import api from '../utils/api';
 import { Bet, BetClient, BetServer } from '../types/bet';
 import { Week } from '../types/week';
-import { mainModule } from 'process';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -48,26 +47,12 @@ export default function BasicGrid({ user }: ChildProps) {
     const [isSaved, setIsSaved] = React.useState(false);
 
     const [weeks, setWeeks] = React.useState<Week[]>([]);
+
     const [currentWeek, setCurrentWeek] = React.useState<Week>({
         Id: 1,
         IsBetActive: false
     });
 
-    console.log('loginuser1');
-    console.log(user);
-
-    
-    const [users, setUsers] = React.useState<User[]>([]);
-
-    const [currentUser, setCurrentUser] = React.useState<User>({
-        Id: user.Id,
-        Name: user.Name,
-        UserName: user.UserName,
-        Password:'',
-        IsAdmin:user.IsAdmin
-    });
-    
-    
     const [userBets, setUserBets] = useState<BetClient[]>([]);
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -101,13 +86,7 @@ export default function BasicGrid({ user }: ChildProps) {
     useEffect(() => {
         api().get<Week[]>("/weeks").then((response) => {
             setWeeks(response.data);
-        });
-    }, []);
-
-    // USERS
-    useEffect(() => {
-        api().get<User[]>("/users").then((response) => {
-            setUsers(response.data);
+            //setCurrentWeek(weeks[0])
         });
     }, []);
 
@@ -116,15 +95,8 @@ export default function BasicGrid({ user }: ChildProps) {
 
         setIsLoading(true);
         const userBets1: BetClient[] = ([]);
-        
-        let betUserId = currentUser.Id < 0 ? user.Id : currentUser.Id;
 
-        console.log('betUserId');
-        console.log(betUserId);
-        console.log('games');
-        console.log(games);
-
-        games.map(game => game.GameBets.filter(x => x.UserId === betUserId)?.map(bett => {
+        games.map(game => game.GameBets.filter(x => x.UserId === user.Id)?.map(bett => {
             userBets1.push({
                 Bet: bett.Bet,
                 GameId: bett.GameId,
@@ -132,13 +104,9 @@ export default function BasicGrid({ user }: ChildProps) {
             })
         }
         ))
-
-        console.log('userBets1');
-        console.log(userBets1);
-
         setUserBets(userBets1);
         setIsLoading(false);
-    }, [games, currentWeek.Id, currentUser.Id]);
+    }, [games]);
 
 
     const options = [
@@ -148,8 +116,16 @@ export default function BasicGrid({ user }: ChildProps) {
         { label: '2', value: 2 },
     ];
 
+    //const [value, setValue] = React.useState('fruit');
+
+    /* const handleComboChange = (event: any) => {
+         setValue(event.target.value);
+     };
+ */
+
     const [value, setSelectedOption] = React.useState(-1);
 
+    // This function is triggered when the select changes
     const selectWeek = (event: React.ChangeEvent<HTMLSelectElement>) => {
         event.preventDefault();
         const value = event.target.value;
@@ -159,16 +135,12 @@ export default function BasicGrid({ user }: ChildProps) {
         }
     };
 
-    const selectUser = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        event.preventDefault();
-        const value = event.target.value;
-        var selectedUser = users.find(x => x.Id === parseInt(value));
-        if (selectedUser) {
-            setCurrentUser(selectedUser);
-        }
-    }; 
-
     const radioHandler = (event: React.ChangeEvent<HTMLInputElement>, gameId: number) => {
+        //console.log(event.target.value);
+        //console.log(gameId);
+        //console.log(user.Id);
+        //console.log(user.Name);
+
         /*setIsLoading(true);
 
         const betData: BetServer = {
@@ -202,6 +174,8 @@ export default function BasicGrid({ user }: ChildProps) {
                 dispatch(getGames(currentWeek.Id));
                 setIsLoading(false);
                 setIsSaved(true);
+                console.log('games2');
+                console.log(games);
                 //setUserBets(userBets);
             });
         }
@@ -218,24 +192,11 @@ export default function BasicGrid({ user }: ChildProps) {
                 </div>
             </div>
 
-            {user.IsAdmin &&
-                <div className="container-1">
-                    <select className='selectbox' onChange={(selectedOption) => selectUser(selectedOption)}>
-                        <option value={user.Id}>Kullanici</option>
-                        {
-                        users.filter(x => !x.IsAdmin).map((user1) => (
-                            <option key={user1.Id} value={user1.Id}>{user1.Name}</option>
-                        ))}
-                    </select>
-                </div>
-            }
-
-
             <div className="container-1">
-                <select className='selectbox'
+                <select className='selectbox' 
                     onChange={(selectedOption) => selectWeek(selectedOption)}>
                     {weeks.map((week) => (
-                        <option key={week.Id} value={week.Id}>{week.Id}. Hafta</option>
+                        <option value={week.Id}>{week.Id}. Hafta</option>
                     ))}
                 </select>
             </div>
@@ -281,7 +242,7 @@ export default function BasicGrid({ user }: ChildProps) {
                                     checked={userBets.find(x => x.GameId == game.GameId)?.Bet === 2}
                                     disabled={isLoading || !currentWeek.IsBetActive}
                                     className={((!currentWeek.IsBetActive && game.Result === 2 && game.Result === userBets.find(x => x.GameId == game.GameId)?.Bet) ? 'winner' : userBets.find(x => x.GameId == game.GameId)?.Bet === 2 ? 'looser' : '')}
-                                    onChange={(selectedOption) => radioHandler(selectedOption, game.GameId)} /> 2 {game.AwayWinPoint > 0 ? '(' + game.AwayWinPoint / 100 + ')' : ''}
+                                     onChange={(selectedOption) => radioHandler(selectedOption, game.GameId)} /> 2 {game.AwayWinPoint > 0 ? '(' + game.AwayWinPoint / 100 + ')' : ''}
                             </div>
                         </div>
 
@@ -289,19 +250,19 @@ export default function BasicGrid({ user }: ChildProps) {
                 );
             })}
 
-            {!user.IsAdmin && isSaved &&
+            {isSaved &&
                 <div className="container-1">
                     Kaydedildi.
                 </div>
             }
 
-            {!user.IsAdmin && !currentWeek.IsBetActive &&
+            {!currentWeek.IsBetActive &&
                 <div className="container-1">
                     Bahisler kapalidir.
                 </div>
             }
 
-            {!user.IsAdmin && currentWeek.IsBetActive &&
+            {currentWeek.IsBetActive &&
                 <div className="container-1">
                     <button onClick={buttonHandler} disabled={isLoading || !currentWeek.IsBetActive}>{userBets.length > 0 ? 'GUNCELLE' : 'OYNA'}</button>.
                 </div>
