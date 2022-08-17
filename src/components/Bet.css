@@ -369,3 +369,36 @@ h1 em {
 }
 
 h3 { color: #7c795d; font-family: 'Source Sans Pro', sans-serif; font-size: 10px; font-weight: 400; line-height: 20px; }
+
+.bothteams {
+  width:300px !important;
+  line-height: 1px !important;
+  margin:0.2em;
+}
+
+.userbets {
+  width:70px  !important;
+  line-height: 1px !important;
+  margin:0.2em;
+  color: rgb(0 0 0 / 76%);
+  font-weight: bolder;
+}
+
+.gridHeader {
+  font-family: "Raleway", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: rgb(0 0 0 / 76%);
+}
+
+
+
+div.winner {
+  background-color: lime;
+}
+
+div.looser {
+  background-color: red;
+}

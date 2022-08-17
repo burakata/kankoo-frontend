@@ -56,18 +56,18 @@ export default function BasicGrid({ user }: ChildProps) {
     console.log('loginuser1');
     console.log(user);
 
-    
+
     const [users, setUsers] = React.useState<User[]>([]);
 
     const [currentUser, setCurrentUser] = React.useState<User>({
         Id: user.Id,
         Name: user.Name,
         UserName: user.UserName,
-        Password:'',
-        IsAdmin:user.IsAdmin
+        Password: '',
+        IsAdmin: user.IsAdmin
     });
-    
-    
+
+
     const [userBets, setUserBets] = useState<BetClient[]>([]);
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -95,7 +95,7 @@ export default function BasicGrid({ user }: ChildProps) {
         if (currentWeek) {
             dispatch(getGames(currentWeek.Id));
         }
-    }, [currentWeek.Id]);
+    }, [isLoading, currentWeek.Id]);
 
     // WEEKS
     useEffect(() => {
@@ -116,7 +116,7 @@ export default function BasicGrid({ user }: ChildProps) {
 
         setIsLoading(true);
         const userBets1: BetClient[] = ([]);
-        
+
         let betUserId = currentUser.Id < 0 ? user.Id : currentUser.Id;
 
         console.log('betUserId');
@@ -166,7 +166,7 @@ export default function BasicGrid({ user }: ChildProps) {
         if (selectedUser) {
             setCurrentUser(selectedUser);
         }
-    }; 
+    };
 
     const radioHandler = (event: React.ChangeEvent<HTMLInputElement>, gameId: number) => {
         /*setIsLoading(true);
@@ -198,11 +198,10 @@ export default function BasicGrid({ user }: ChildProps) {
             console.log('games1');
             console.log(games);
 
-            api().post<Bet[]>("/add-bulk-bets", userBets).then(() => {
+            api().post<Bet[]>("/add-bulk-bets", userBets).then((response) => {
                 dispatch(getGames(currentWeek.Id));
                 setIsLoading(false);
                 setIsSaved(true);
-                //setUserBets(userBets);
             });
         }
     };
@@ -223,9 +222,10 @@ export default function BasicGrid({ user }: ChildProps) {
                     <select className='selectbox' onChange={(selectedOption) => selectUser(selectedOption)}>
                         <option value={user.Id}>Kullanici</option>
                         {
-                        users.filter(x => !x.IsAdmin).map((user1) => (
-                            <option key={user1.Id} value={user1.Id}>{user1.Name}</option>
-                        ))}
+                            users.filter(x => !x.IsAdmin).map((user1) => (
+                                <option key={user1.Id} value={user1.Id}>{user1.Name}</option>
+                            ))
+                        }
                     </select>
                 </div>
             }
@@ -306,6 +306,51 @@ export default function BasicGrid({ user }: ChildProps) {
                     <button onClick={buttonHandler} disabled={isLoading || !currentWeek.IsBetActive}>{userBets.length > 0 ? 'GUNCELLE' : 'OYNA'}</button>.
                 </div>
             }
+
+            {/* <div className="container-1">   <div className="grid_div bothteams">
+                <p className='gridHeader'><strong>TAHMINLER</strong></p>
+            </div></div> */}
+            <br></br>
+            <br></br>
+
+            {!currentWeek.IsBetActive &&
+                <div className="container-1" key='-1key'>
+                    <div className="grid_div bothteams">
+                        <p className='gridHeader'><strong>TAHMINLER ({currentWeek.Id}.Hafta)</strong></p>
+                    </div>
+                    {
+                        users.filter(x => !x.IsAdmin).map((user1) => {
+                            return (
+                                <div className="grid_div userbets">
+                                    <p className='teamName'>{user1.Name}</p>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            }
+
+            {!currentWeek.IsBetActive && games.map((game) => {
+
+                return (
+                    <div className="container-1" key={game.GameId + 'key'}>
+                        <div className="grid_div bothteams">
+                            <p className='teamName'>{game.HomeTeam.Name} - {game.AwayTeam.Name}</p>
+                        </div>
+                        {
+                            users.filter(x => !x.IsAdmin).map((user1) => (
+                                game.GameBets.filter(x => x.UserId === user1.Id)?.map(bett => {
+                                    return (
+                                        <div className={((game.Result === bett.Bet) ? 'grid_div userbets winner' : 'grid_div userbets looser')}>
+                                            <p className='teamName'>{bett.Bet}</p>
+                                        </div>
+                                    )
+                                })
+                            ))
+                        }
+                    </div>
+                );
+            })}
 
         </>
 
